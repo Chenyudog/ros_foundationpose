@@ -25,8 +25,8 @@ setup(
     entry_points={
         'console_scripts': [
             'foundationpose_node=ros_foundationpose.run_foundationpose:main',
-            'PictureSaveNode=ros_foundationpose.take_photo:main',
-            'delete_photo_node=foundationpose.delete_photo_node:main'
+            'take_photo_node=ros_foundationpose.take_photo:main',
+            'delete_photo_node=ros_foundationpose.delete_photo:main'
         ],
     },
 )

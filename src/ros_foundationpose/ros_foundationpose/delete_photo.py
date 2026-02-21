@@ -5,7 +5,7 @@ import glob
 
 class ClearImageFolderNode(Node):
     def __init__(self):
-        super().__init__("clear_image_folder_node")
+        super().__init__("delete_photo_node")
         
         # ========== 配置你要清空的文件夹路径（与保存节点路径一致） ==========
         self.rgb_path = "/home/ubuntu/main_ws/ros_foundationpose/src/ros_foundationpose/FoundationPose/demo_data/energy_lattice/rgb"  
