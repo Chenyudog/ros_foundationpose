@@ -19,7 +19,6 @@ class ClearImageFolderNode(Node):
         
         # 清空完成后打印日志，5秒后自动退出（给你看日志的时间）
         self.get_logger().info("✅ 清空操作完成，节点即将退出！")
-        self.create_timer(5.0, self.shutdown_node)  # 5秒后触发退出
 
     def clear_folders(self):
         """核心函数：清空指定文件夹内的目标格式文件"""

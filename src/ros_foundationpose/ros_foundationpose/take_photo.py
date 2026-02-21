@@ -162,8 +162,11 @@ class PictureSaveNode(Node):
 
     # ========== 成对保存（严格保障，Depth优先） ==========
     def _save_paired_frames(self, seq, rgb_data, depth_data, stamp_pair):
-        rgb_file = os.path.join(self.rgb_path, f"{seq}.png")
-        depth_file = os.path.join(self.depth_path, f"{seq}.png")
+        BASE_TS = 1234567890123456789
+        new_name = f"{BASE_TS + seq * 1000}"
+
+        rgb_file = os.path.join(self.rgb_path, f"{new_name}.png")
+        depth_file = os.path.join(self.depth_path, f"{new_name}.png")
 
         rgb_ok = False
         depth_ok = False
