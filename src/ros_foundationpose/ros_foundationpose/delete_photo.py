@@ -10,7 +10,7 @@ class ClearImageFolderNode(Node):
         # ========== 配置你要清空的文件夹路径（与保存节点路径一致） ==========
         self.rgb_path = "/home/ubuntu/main_ws/ros_foundationpose/src/ros_foundationpose/FoundationPose/demo_data/energy_lattice/rgb"  
         self.depth_path = "/home/ubuntu/main_ws/ros_foundationpose/src/ros_foundationpose/FoundationPose/demo_data/energy_lattice/depth"
-        
+        self.masks_path = "/home/ubuntu/main_ws/ros_foundationpose/src/ros_foundationpose/FoundationPose/demo_data/energy_lattice/masks"  # 如果你也想清空掩码文件夹
         # ========== 要删除的文件格式（避免误删其他文件） ==========
         self.delete_extensions = [".png", ".npy"]  # 包含Depth降级保存的npy格式
         
@@ -26,6 +26,8 @@ class ClearImageFolderNode(Node):
         self._clear_single_folder(self.rgb_path, "RGB")
         # 2. 清空Depth文件夹
         self._clear_single_folder(self.depth_path, "Depth")
+        # 3. 清空Mask文件夹
+        self._clear_single_folder(self.masks_path, "Mask")
 
     def _clear_single_folder(self, folder_path, folder_name):
         """辅助函数：清空单个文件夹，带日志输出"""

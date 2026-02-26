@@ -17,13 +17,6 @@ class HandDetectNode(Node):
         # 加载自定义YOLO手部检测模型
         self.model=YOLO(yolomodel_path)
 
-        # 创建图像发布者（发布带检测框的图像）
-        self.img_pub=self.create_publisher(
-            Image,#消息类型
-            "/camera/hand_detect_node",#发布的话题名称
-            10
-        )
-
         # 初始化CVBridge
         self.bridge=CvBridge()  
         
@@ -45,13 +38,13 @@ class HandDetectNode(Node):
             
             # 4. OpenCV图像 → ROS Image消息
             ros_vis_image = self.bridge.cv2_to_imgmsg(vis_image, encoding="bgr8")
+
             # 复用原始图像的时间戳和帧ID（方便同步）
             ros_vis_image.header = msg.header
             
             # 5. 发布带检测框的图像
             self.img_pub.publish(ros_vis_image)
 
-            # -------------------------- 新增部分开始 --------------------------
             # 6. 生成手部掩码图（白手黑背景）
             mask = np.zeros(cv_image.shape[:2], dtype=np.uint8)  # 创建纯黑掩码
             for box in results[0].boxes:
@@ -61,11 +54,19 @@ class HandDetectNode(Node):
                     mask[y1:y2, x1:x2] = 255  # 手部区域设为白色
             
             # 7. 保存掩码图（用时间戳命名，和原始图片对应）
-            mask_filename = f"mask_{msg.header.stamp.sec}_{msg.header.stamp.nanosec}.png"
-            mask_save_path = os.path.join(output_mask_path, mask_filename)
+            # 新代码（和原图同名）
+            # 方式1：如果是处理本地文件夹图片（批量处理场景）
+            # 前提：你遍历图片时能拿到原图路径 img_path，直接取原图文件名
+            original_filename = os.path.basename(img_path)  # 比如从1234567890123457789.png路径中提取文件名
+
+            # 方式2：如果是订阅ROS图片话题（实时场景）
+            # 前提：你在发布图片时，把原图文件名放在了msg.header.frame_id里
+            original_filename = msg.header.frame_id  # 直接获取原图文件名
+
+            # 最终保存（文件名和原图完全一致）
+            mask_save_path = os.path.join(output_mask_path, original_filename)
             cv2.imwrite(mask_save_path, mask)
             self.get_logger().info(f"掩码图已保存：{mask_save_path}")
-            # -------------------------- 新增部分结束 --------------------------
 
         except CvBridgeError as e:
             self.get_logger().error(f"图像转换失败：{e}")
@@ -75,16 +76,6 @@ class HandDetectNode(Node):
 def main(args=None):
     rclpy.init(args=args)  # 保留args参数，兼容命令行传参
     node=HandDetectNode()
-    
-    # 补充：你原始代码遗漏了「订阅图片话题」的关键代码！
-    # 必须添加这行，否则img_callback永远不会被触发
-    node.img_sub = node.create_subscription(
-        Image,
-        "/camera/rgb/image_raw",  # 原始图片话题（根据你的实际话题修改）
-        node.img_callback,
-        10
-    )
-    
     rclpy.spin(node)
     # 销毁节点（释放资源）
     node.destroy_node()
