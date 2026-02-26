@@ -5,7 +5,7 @@ import time as t
 from ultralytics import YOLO  # 新增：YOLO依赖
 
 # ========== YOLO配置（集中管理） ==========
-YOLO_MODEL_PATH = "/home/ubuntu/yolo/ultralytics/runs/train/hand_yolov88/weights/best.pt"  # 补全权重文件（通常是best.pt）
+YOLO_MODEL_PATH = "/home/ubuntu/yolo/ultralytics/datasets/energy_lattice/runs/train/energy_lattice_yolov812/weights/best.pt"  # 补全权重文件（通常是best.pt）
 MASK_SAVE_PATH = "/home/ubuntu/main_ws/ros_foundationpose/src/ros_foundationpose/FoundationPose/demo_data/energy_lattice/masks"
 TARGET_CLASS_ID = 0  # 手部类别ID（根据你的YOLO模型调整）
 
@@ -26,7 +26,7 @@ def generate_hand_mask(rgb_image, mask_filename):
     """
     try:
         # 1. YOLO模型推理
-        results = yolo_model(rgb_image, conf=0.25)
+        results = yolo_model(rgb_image, conf=0.6)
         
         # 2. 生成纯黑掩码，手部区域设为白色
         mask = np.zeros(rgb_image.shape[:2], dtype=np.uint8)
