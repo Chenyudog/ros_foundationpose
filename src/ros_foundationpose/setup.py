@@ -33,7 +33,8 @@ setup(
         'console_scripts': [
             'foundationpose_node=ros_foundationpose.run_foundationpose:main',
             'take_photo_node=ros_foundationpose.take_photo:main',
-            'delete_photo_node=ros_foundationpose.delete_photo:main'
+            'delete_photo_node=ros_foundationpose.delete_photo:main',
+            'get_position_node=ros_foundationpose.get_position:main'
         ],
     },
 )
